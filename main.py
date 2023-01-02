@@ -12,6 +12,8 @@ shutdown = 0
 frase = None
 pause = 0
 CHROME = os.path.join("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
+from playwright.sync_api import sync_playwright
+
 
 # Função para ouvir e reconhecer a fala
 def ouvir_microfone(shutdown):
@@ -55,13 +57,14 @@ def ouvir_microfone(shutdown):
             # Passa a variável para o algoritmo reconhecedor de padroes
             frase = microfone.recognize_google(audio, language='pt-BR')
 
-            if "despause" in frase:
+            # Despausa a Avora
+            if "despause" in frase or "despausa" in frase:
                 engine.say("Dando continuidade ao serviço")
                 engine.runAndWait()
                 play(unpauseAudio)
                 pause = 0
 
-
+            # Pausa a Avora
             if frase.startswith("ávora") or frase.startswith("árvore") or frase.startswith("abóbora") or frase.startswith("afora") or frase.startswith("agora"):
                 if "pause" in frase:
                     engine.say("Pausando o serviço")
@@ -113,6 +116,76 @@ def ouvir_microfone(shutdown):
                         "Sou uma assistente virtual disposta a te ajudar nas tarefas do dia a dia, no trabalho, ou mesmo no lazer.")
                     engine.runAndWait()
                     frase = "reinit th while"
+
+            # Comandos musica
+            if frase.startswith("defina"):
+                engine.say('procurando por' + frase[6:])
+                engine.runAndWait()
+                with sync_playwright() as p:
+                    try:
+                        browser = p.chromium.launch()
+                        page = browser.new_page()
+                        page.goto("https://www.google.com")
+                        if frase != 'defina':
+                            page.locator(
+                                'xpath=/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input').fill(
+                                'wikipedia')
+                            page.locator(
+                                'xpath=/html/body/div[1]/div[3]/form/div[1]/div[1]/div[4]/center/input[1]').click()
+                            page.locator('xpath=//*[@id="rso"]/div[1]/div/div/div/div/div/div/div[1]/a/h3').click()
+                            page.locator('xpath=//*[@id="searchform"]').click()
+                            page.locator(
+                                'xpath=/html/body/div[1]/div/header/div[2]/div/div/div/form/div/div/div[1]/input').fill(
+                                frase[6:])
+                            page.locator('xpath=//*[@id="searchform"]/div/button').click(timeout=2000)
+                            WikipediaResponse = page.locator(
+                                'xpath=//*[@id="mw-content-text"]/div[1]/p[1]').inner_text(timeout=2000)
+                            print(WikipediaResponse)
+                            engine.say(WikipediaResponse)
+                            engine.runAndWait()
+                            browser.close()
+                            frase = "reinit th while"
+                        else:
+                            engine.say('Não entendi')
+                            engine.runAndWait()
+                            frase = 'reinit th while'
+                    except:
+                        try:
+                            browser = p.chromium.launch()
+                            page = browser.new_page()
+                            page.goto("https://www.google.com")
+                            if frase != 'defina':
+                                page.locator(
+                                    'xpath=/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input').fill(
+                                    'wikipedia en')
+                                page.locator(
+                                    'xpath=/html/body/div[1]/div[3]/form/div[1]/div[1]/div[4]/center/input[1]').click()
+                                page.locator('xpath=//*[@id="rso"]/div[1]/div/div/div/div/div/div/div[1]/a/h3').click()
+                                page.locator('xpath=//*[@id="p-search"]').click()
+                                page.locator(
+                                    'xpath=//*[@id="searchInput"]').fill(
+                                    frase[6:])
+                                page.locator('xpath=//*[@id="searchButton"]').click(timeout=2000)
+                                WikipediaResponse = page.locator(
+                                    'xpath=//*[@id="mw-content-text"]/div[1]/p[1]').inner_text(timeout=2000)
+                                print(WikipediaResponse)
+                                engine.say(WikipediaResponse)
+                                engine.runAndWait()
+                                browser.close()
+                                frase = "reinit th while"
+                            else:
+                                engine.say('Não entendi')
+                                engine.runAndWait()
+                                frase = 'reinit th while'
+                        except:
+                            engine.say('Não encontrei nada sobre.')
+                            engine.runAndWait()
+                            frase = 'reinit th while'
+
+
+
+
+
 
 
 
