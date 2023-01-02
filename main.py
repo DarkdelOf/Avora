@@ -1,16 +1,17 @@
 import pyttsx3
-import subprocess
 import speech_recognition as sr
 from pydub import AudioSegment
 from pydub.playback import play
+import os
 
-otherquestAudio = AudioSegment.from_mp3("otherquest.mp3")
-pauseAudio = AudioSegment.from_mp3("pause.mp3")
-unpauseAudio = AudioSegment.from_mp3("unpause.mp3")
+otherquestAudio = AudioSegment.from_mp3("sfx/otherquest.mp3")
+pauseAudio = AudioSegment.from_mp3("sfx/pause.mp3")
+unpauseAudio = AudioSegment.from_mp3("sfx/unpause.mp3")
 engine = pyttsx3.init()
 shutdown = 0
 frase = None
 pause = 0
+CHROME = os.path.join("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
 
 # Função para ouvir e reconhecer a fala
 def ouvir_microfone(shutdown):
@@ -75,10 +76,23 @@ def ouvir_microfone(shutdown):
             # Abre o navegador
             if frase.startswith("Abrir") or frase.startswith("Abra") or frase.startswith("abra") or frase.startswith("abrir"):
                 if "navegador" in frase or "Google" in frase or "Chrome" in frase or "Google Chrome" in frase:
-                    subprocess.check_call([r"C:\Program Files\Google\Chrome\Application\chrome.exe"])
+                    try:
+                        os.popen('C:\Program Files\Google\Chrome\Application\chrome.exe', 'r', 1)
+                    except:
+                        continue
                     engine.say("Abrindo o navegador")
                     engine.runAndWait()
                     frase = "reinit th while"
+
+
+            # Fecha o navegador
+            if frase.startswith("Feche") or frase.startswith("Fecha") or frase.startswith("feche") or frase.startswith("fecha"):
+                if "navegador" in frase or "Google" in frase or "Chrome" in frase or "Google Chrome" in frase:
+                    os.system('taskkill /im chrome.exe')
+                    engine.say("Fechando o navegador")
+                    engine.runAndWait()
+                    frase = "reinit th while"
+
 
             # Desliga a Avora
             if frase == "desligue":
