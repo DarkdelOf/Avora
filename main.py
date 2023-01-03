@@ -1,8 +1,11 @@
+import time
+
 import pyttsx3
 import speech_recognition as sr
 from pydub import AudioSegment
 from pydub.playback import play
 import os
+import pyautogui
 
 otherquestAudio = AudioSegment.from_mp3("sfx/otherquest.mp3")
 pauseAudio = AudioSegment.from_mp3("sfx/pause.mp3")
@@ -181,6 +184,56 @@ def ouvir_microfone(shutdown):
                             engine.say('Não encontrei nada sobre.')
                             engine.runAndWait()
                             frase = 'reinit th while'
+
+            # Manipula texto
+            if frase.startswith("Escreve o seguinte") or frase.startswith("Escreva o seguinte") or frase.startswith("escreve o seguinte") or frase.startswith("escreva o seguinte"):
+                engine.say("Escrevendo a sentença")
+                engine.runAndWait()
+                pyautogui.typewrite(frase[19:])
+                frase = "reinit th while"
+
+            # Realiza ações pre-setadas do teclado
+            if frase.startswith("Execute") or frase.startswith("Executa") or frase.startswith("execute") or frase.startswith("executa"):
+                if "pause" in frase or "pausa" in frase or "pausar" in frase:
+                    engine.say("Despausando ou pausando a última mídia")
+                    pyautogui.press('playpause')
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "diminua o volume" in frase or "diminui o volume" in frase or "diminuir o volume" in frase:
+                    engine.say("Diminuindo o volume")
+                    pyautogui.press('volumedown', presses=5)
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "aumenta o volume" in frase or "aumente o volume" in frase or "aumentar o volume" in frase:
+                    engine.say("Aumentando o volume")
+                    pyautogui.press('volumeup', presses=5)
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "silenciar" in frase:
+                    engine.say("Mutando o volume")
+                    pyautogui.press('volumemute')
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "passe de faixa" in frase or "próxima faixa" in frase:
+                    engine.say("Indo para próxima faixa")
+                    pyautogui.press('nexttrack')
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "volte a faixa" in frase:
+                    engine.say("Voltando a faixa")
+                    pyautogui.press('prevtrack')
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "faixa anterior" in frase:
+                    engine.say("Indo para a faixa anterior")
+                    pyautogui.press('prevtrack', presses=2)
+                    engine.runAndWait()
+                    frase = "reinit th while"
+                if "print" in frase or "printscreen" in frase:
+                    engine.say("Tirando print")
+                    pyautogui.press('prtscr')
+                    engine.runAndWait()
+                    frase = "reinit th while"
 
 
 

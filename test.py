@@ -1,11 +1,11 @@
-from playwright.sync_api import sync_playwright
+import time
+import pyautogui
 
-with sync_playwright() as p:
-    browser = p.chromium.launch()
-    page = browser.new_page()
-    page.goto("https://www.google.com")
-    page.locator('xpath=/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input').fill('wikipedia batata')
-    page.locator('xpath=/html/body/div[1]/div[3]/form/div[1]/div[1]/div[4]/center/input[1]').click()
-    WikipediaResponse = page.locator('xpath=//*[@id="rso"]/div[1]/div/div/div[2]/div/span').inner_text()
-    print(WikipediaResponse)
-    browser.close()
+timeout = time.time() + 3   # 5 minutes from now
+while True:
+    test = 0
+    pyautogui.typewrite('vai toma no cu')
+    pyautogui.press('enter')
+    if test == 5 or time.time() > timeout:
+        break
+    test = test - 1
